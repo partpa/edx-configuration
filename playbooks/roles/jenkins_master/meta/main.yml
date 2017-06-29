@@ -1,6 +1,5 @@
 ---
 dependencies:
   - common
-  - nginx
   - role: oraclejdk
     tags: java
