@@ -15,6 +15,7 @@
       - xserver
       - analytics_api
       - ecommerce
+      - programs
       - credentials
       nginx_default_sites:
       - lms
@@ -37,6 +38,7 @@
     - edx_ansible
     - analytics_api
     - ecommerce
+    - programs
     - credentials
     - oauth_client_setup
     - role: datadog

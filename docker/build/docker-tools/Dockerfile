@@ -10,6 +10,7 @@
 FROM edxops/xenial-common:latest
 MAINTAINER edxops
 
+ENV PROGRAMS_VERSION=master
 ENV REPO_OWNER=edx
 
 ADD . /edx/app/edx_ansible/edx_ansible
