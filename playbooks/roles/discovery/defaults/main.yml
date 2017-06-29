@@ -24,9 +24,6 @@ DISCOVERY_MYSQL: 'localhost'
 # MySQL usernames are limited to 16 characters
 DISCOVERY_MYSQL_USER: 'discov001'
 DISCOVERY_MYSQL_PASSWORD: 'password'
-DISCOVERY_MYSQL_PORT: '3306'
-DISCOVERY_MYSQL_OPTIONS:
-  connect_timeout: 10
 
 DISCOVERY_DATABASES:
   # rw user
@@ -36,8 +33,7 @@ DISCOVERY_DATABASES:
     USER: '{{ DISCOVERY_MYSQL_USER }}'
     PASSWORD: '{{ DISCOVERY_MYSQL_PASSWORD }}'
     HOST: '{{ DISCOVERY_MYSQL }}'
-    PORT: '{{ DISCOVERY_MYSQL_PORT }}'
-    OPTIONS: '{{ DISCOVERY_MYSQL_OPTIONS }}'
+    PORT: '3306'
     ATOMIC_REQUESTS: false
     CONN_MAX_AGE: 60
 
@@ -143,6 +139,8 @@ DISCOVERY_SERVICE_CONFIG:
 
   STATIC_ROOT: "{{ COMMON_DATA_DIR }}/{{ discovery_service_name }}/staticfiles"
   # db config
+  DATABASE_OPTIONS:
+    connect_timeout: 10
   DATABASES: '{{ DISCOVERY_DATABASES }}'
   CACHES: '{{ DISCOVERY_CACHES }}'
 
