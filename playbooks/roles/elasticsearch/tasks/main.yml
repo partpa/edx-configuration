@@ -31,7 +31,8 @@
 
 - name: Install Elasticsearch repo key 
   apt_key:
-    url: "{{ elasticsearch_apt_key_url }}"
+    id: "{{ elasticsearch_apt_key }}"
+    keyserver: "{{ elasticsearch_apt_keyserver }}"
     state: present
   tags:
     - install
