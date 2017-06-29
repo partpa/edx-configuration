@@ -2,7 +2,6 @@
 dependencies:
   - common
   - jscover
-  - newrelic
   - role: oraclejdk
     oraclejdk_version: "8u60"
     oraclejdk_base: "jdk1.8.0_60"
