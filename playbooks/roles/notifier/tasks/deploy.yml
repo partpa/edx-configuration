@@ -10,9 +10,6 @@
   notify:
     - restart notifier-scheduler
     - restart notifier-celery-workers
-  tags:
-    - "install"
-    - "install:code"
 
 # Optional auth for git
 - name: Create ssh script for git (not authenticated)
@@ -22,9 +19,6 @@
     owner: "{{ notifier_user }}"
     mode: "0750"
   when: NOTIFIER_GIT_IDENTITY == ""
-  tags:
-    - "install"
-    - "install:code"
 
 - name: Create ssh script for git (authenticated)
   template:
@@ -33,9 +27,6 @@
     owner: "{{ notifier_user }}"
     mode: "0750"
   when: NOTIFIER_GIT_IDENTITY != ""
-  tags:
-    - "install"
-    - "install:code"
 
 - name: Install read-only ssh key
   copy:
@@ -45,9 +36,6 @@
     owner: "{{ notifier_user }}"
     mode: "0600"
   when: NOTIFIER_GIT_IDENTITY != ""
-  tags:
-    - "install"
-    - "install:code"
 
 - name: Checkout theme
   git:
@@ -59,9 +47,6 @@
   become_user: "{{ notifier_user }}"
   environment:
     GIT_SSH: "{{ notifier_git_ssh }}"
-  tags:
-    - "install"
-    - "install:code"
 
 - name: Write notifier local settings
   template:
@@ -71,9 +56,6 @@
   when: NOTIFIER_THEME_NAME != ''
   notify:
     - restart notifier-celery-workers
-  tags:
-    - "install"
-    - "install:configuration"
 
 - name: Install application requirements
   pip:
@@ -85,9 +67,6 @@
   notify:
     - restart notifier-scheduler
     - restart notifier-celery-workers
-  tags:
-    - "install"
-    - "install:app-requirements"
 
 # Syncdb for whatever reason always creates the file owned by www-data:www-data, and then
 # complains it can't write because it's running as notifier.  So this is to touch the file into
@@ -105,8 +84,6 @@
     - restart notifier-celery-workers
   tags:
   - deploy
-  - "install"
-  - "install:configuration"
 
 - name: Syncdb
   shell: "{{ NOTIFIER_VENV_DIR }}/bin/python manage.py syncdb"
@@ -115,10 +92,6 @@
   become: true
   become_user: "{{ notifier_user }}"
   environment: notifier_env_vars
-  when: migrate_db is defined and migrate_db|lower == "yes"
   notify:
     - restart notifier-scheduler
     - restart notifier-celery-workers
-  tags:
-    - "install"
-    - "install:configuration"
