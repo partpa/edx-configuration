@@ -1,5 +1,3 @@
-- Role: edxapp
-  - Set preload_app to False in gunicorn config for LMS and Studio.
 - Role: analytics_api
   - Added `ANALYTICS_API_AGGREGATE_PAGE_SIZE`, default value 10.  Adjust this parameter to increase the number of
     aggregate search results returned by the Analytics API, i.e. in course_metadata: enrollment_modes, cohorts, and
