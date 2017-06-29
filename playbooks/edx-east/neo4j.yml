@@ -13,5 +13,3 @@
         - coursegraph
 #    - aws
     - neo4j
-    - role: splunkforwarder
-      when: COMMON_ENABLE_SPLUNKFORWARDER
