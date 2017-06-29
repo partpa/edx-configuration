@@ -3,6 +3,3 @@
   service: 
     name: jenkins 
     state: restarted
-  tags:
-    - manage
-    - manage:start
