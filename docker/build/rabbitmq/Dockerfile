@@ -1,4 +1,4 @@
-FROM edxops/xenial-common:latest
+FROM edxops/precise-common
 MAINTAINER edxops
 
 ADD . /edx/app/edx_ansible/edx_ansible
