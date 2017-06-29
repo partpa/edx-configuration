@@ -1,5 +1,3 @@
-- Role: edxapp
-  - Add the EDXAPP_LANGUAGE_COOKIE setting
 - Role: rabbitmq
   - Upgraded to 3.6.9
   - Switched to a PPA rather than a .deb hosted in S3
