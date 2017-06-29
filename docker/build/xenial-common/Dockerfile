@@ -1,5 +1,5 @@
 FROM ubuntu:xenial
-MAINTAINER edxops
+MAINTAINER edxops 
 
 # Set locale to UTF-8 which is not the default for docker.
 # See the links for details:
@@ -10,8 +10,7 @@ ENV LANG C.UTF-8
 
 ENV ANSIBLE_REPO="https://github.com/edx/ansible"
 ENV CONFIGURATION_REPO="https://github.com/edx/configuration.git"
-ARG OPENEDX_RELEASE=master
-ENV CONFIGURATION_VERSION="${OPENEDX_RELEASE}"
+ENV CONFIGURATION_VERSION="master"
 
 ADD util/install/ansible-bootstrap.sh /tmp/ansible-bootstrap.sh
 RUN chmod +x /tmp/ansible-bootstrap.sh
