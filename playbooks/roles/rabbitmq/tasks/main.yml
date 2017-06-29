@@ -316,9 +316,3 @@
   tags:
     - "install"
     - "install:app-configuration"
-
-- name: Set cluster name
-  command: "/usr/sbin/rabbitmqctl set_cluster_name  {{ RABBITMQ_CLUSTER_NAME }}"
-  tags:
-    - "install"
-    - "install:app-configuration"
