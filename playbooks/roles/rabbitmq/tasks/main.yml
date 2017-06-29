@@ -15,22 +15,18 @@
     - install
     - install:app-requirements
 
-- name: trust rabbit's packagecloud repository
+- name: trust extra repositories
   apt_key:
-    url: "{{ rabbitmq_repo_key }}"
+    url: "{{ item.key }}"
     state: present
-  tags:
-    - "install"
-    - "install:app-requirements"
+  with_items: "{{ extra_repos }}"
 
-- name: add rabbit's packagecloud repository
+- name: add extra repositories
   apt_repository:
-    repo: "{{ rabbitmq_repo }}"
+    repo: "{{ item.repo }}"
     state: present
     update_cache: yes
-  tags:
-    - "install"
-    - "install:app-requirements"
+  with_items: "{{ extra_repos }}"
 
 # If we don't set pipefail first, `||` will be looking at the exit code of the last command in the pipe
 - name: Check if rabbit is installed
@@ -40,16 +36,10 @@
   args:
     executable: /bin/bash
   register: installed_version
-  tags:
-    - "install"
-    - "install:app-requirements"
 
 - name: Fail if wrong rabbit version is installed
   fail: Expected rabbitmq version {{ RABBITMQ_VERSION }}, found {{ installed_version.stdout }}
   when: CHECK_RABBIT_VERSION and installed_version.stdout is defined and installed_version.stdout not in [RABBITMQ_VERSION, 'not installed']
-  tags:
-    - "install"
-    - "install:app-requirements"
 
 - name: Install rabbit package
   apt:
@@ -58,25 +48,16 @@
     force: yes
     update_cache: yes
   when: installed_version.stdout is defined and installed_version.stdout == "not installed"
-  tags:
-    - "install"
-    - "install:app-requirements"
 
 - name: Stop rabbit cluster
   service:
     name: rabbitmq-server
     state: stopped
-  tags:
-    - "install"
-    - "install:app-configuration"
 
 # In case there are lingering processes, ignore errors
 # silently
 - name: Send sigterm to any running rabbitmq processes
   shell: "pkill -u rabbitmq || true"
-  tags:
-    - "install"
-    - "install:app-configuration"
 
 - name: Create rabbitmq edx directories
   file:
@@ -87,9 +68,6 @@
   with_items:
     - "{{ rabbitmq_app_dir }}"
     - "{{ rabbitmq_log_dir }}"
-  tags:
-    - "install"
-    - "install:app-configuration"
 
 - name: Add queue monitoring script
   template:
@@ -99,8 +77,6 @@
     group: "{{ rabbitmq_group }}"
     mode: "0755"
   tags:
-    - "install"
-    - "install:app-configuration"
     - "monitoring"
 
 - name: Add RabbitMQ memory usage script
@@ -111,8 +87,6 @@
     group: "{{ rabbitmq_group }}"
     mode: "0775"
   tags:
-    - "install"
-    - "install:app-configuration"
     - "monitoring"
 
 - name: Set up a cron job to run queue script
@@ -120,8 +94,6 @@
     name: "log-queue-lenghts"
     job: "{{ rabbitmq_app_dir }}/log-rabbitmq-queues.sh >/dev/null 2>&1"
   tags:
-    - "install"
-    - "install:app-configuration"
     - "monitoring"
 
 - name: Set up a cron job to run the script
@@ -129,8 +101,6 @@
     name: "log-rabbitmq-memory-usage"
     job: "{{ rabbitmq_app_dir }}/log-rabbitmq-memory.sh >/dev/null 2>&1"
   tags:
-    - "install"
-    - "install:app-configuration"
     - "monitoring"
 
 - name: install logrotate configuration
@@ -139,7 +109,7 @@
     dest: /etc/logrotate.d/rabbitmq
   tags:
     - "install"
-    - "install:app-configuration"
+    - "install:configuration"
     - "logrotate"
 
 # Defaulting to /var/lib/rabbitmq
@@ -150,9 +120,6 @@
     owner: rabbitmq
     group: rabbitmq
     mode: "0755"
-  tags:
-    - "install"
-    - "install:app-configuration"
 
 - name: Add rabbitmq erlang cookie
   template:
@@ -162,9 +129,6 @@
     group: rabbitmq
     mode: "0400"
   register: erlang_cookie
-  tags:
-    - "install"
-    - "install:app-configuration"
 
 # Defaulting to /etc/rabbitmq
 - name: Create rabbitmq config directory
@@ -174,9 +138,6 @@
     owner: root
     group: root
     mode: "0755"
-  tags:
-    - "install"
-    - "install:app-configuration"
 
 - name: Add rabbitmq environment configuration
   template:
@@ -185,9 +146,6 @@
     owner: root
     group: root
     mode: "0644"
-  tags:
-    - "install"
-    - "install:app-configuration"
 
 - name: Add rabbitmq cluster configuration
   template:
@@ -197,18 +155,12 @@
     group: root
     mode: "0644"
   register: cluster_configuration
-  tags:
-    - "install"
-    - "install:app-configuration"
 
 - name: Install plugins
   rabbitmq_plugin:
     names: "{{ item }}"
     state: enabled
   with_items: "{{ rabbitmq_plugins }}"
-  tags:
-    - "install"
-    - "install:app-configuration"
 
 # When rabbitmq starts up it creates a folder of metadata at '/var/lib/rabbitmq/mnesia'.
 # This folder should be deleted before clustering is setup because it retains data
@@ -218,25 +170,16 @@
     path: "{{ rabbitmq_mnesia_folder }}"
     state: absent
   when: erlang_cookie.changed or cluster_configuration.changed or rabbitmq_refresh
-  tags:
-    - "install"
-    - "install:app-configuration"
 
 - name: Start rabbit nodes
   service:
     name: rabbitmq-server
     state: started
-  tags:
-    - "install"
-    - "install:app-configuration"
 
 - name: Wait for rabbit to start
   wait_for:
     port: "{{ rabbitmq_management_port }}"
     delay: 2
-  tags:
-    - "install"
-    - "install:app-configuration"
 
 - name: Remove guest user
   rabbitmq_user:
@@ -245,8 +188,6 @@
   tags:
     - users
     - maintenance
-    - "manage"
-    - "manage:app-users"
 
 - name: Add vhosts
   rabbitmq_vhost:
@@ -256,8 +197,6 @@
   tags:
     - vhosts
     - maintenance
-    - "install"
-    - "install:app-configuration"
 
 - name: Add admin users
   rabbitmq_user:
@@ -276,8 +215,6 @@
   tags:
     - users
     - maintenance
-    - "manage"
-    - "manage:app-users"
 
 - name: Make queues mirrored
   rabbitmq_policy:
@@ -293,8 +230,6 @@
   tags:
     - ha
     - maintenance
-    - "install"
-    - "install:app-configuration"
 
 #
 # Depends upon the management plugin
@@ -303,16 +238,6 @@
   get_url:
     url: "http://localhost:{{ rabbitmq_management_port }}/cli/rabbitmqadmin"
     dest: "/usr/local/bin/rabbitmqadmin"
-  tags:
-    - "install"
-    - "install:app-configuration"
-
-- name: Ensure rabbitmqadmin attributes
-  file:
-    path: "/usr/local/bin/rabbitmqadmin"
     owner: root
     group: root
     mode: "0655"
-  tags:
-    - "install"
-    - "install:app-configuration"
