@@ -70,12 +70,10 @@ $(docker_push)%: $(docker_pkg)%
 
 .build/%/Dockerfile.test: docker/build/%/Dockerfile Makefile
 	@mkdir -p .build/$*
-# perl p (print the line) n (loop over every line) e (exec the regex), like sed but cross platform
-	@perl -pne "s#FROM edxops/([^:]+)(:\S*)?#FROM \1:test#" $< > $@
+	@sed -E "s#FROM edxops/([^:]+)(:\S*)?#FROM \1:test#" $< > $@
 
 .build/%/Dockerfile.pkg: docker/build/%/Dockerfile Makefile
 	@mkdir -p .build/$*
-# perl p (print the line) n (loop over every line) e (exec the regex), like sed but cross platform
-	@perl -pne "s#FROM edxops/([^:]+)(:\S*)?#FROM \1:test#" $< > $@
+	@sed -E "s#FROM edxops/([^:]+)(:\S*)?#FROM \1:test#" $< > $@
 
 -include $(foreach image,$(images),.build/$(image)/Dockerfile.d)
