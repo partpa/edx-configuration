@@ -1,7 +1,4 @@
 - Role: edxapp
-  - Set the EDXAPP_IMPORT_EXPORT_BUCKET setting to an empty string
-
-- Role: edxapp
   - Updated default value of the EDXAPP_ENTERPRISE_COURSE_ENROLLMENT_AUDIT_MODES setting to ["audit", "honor"]
 
 - Role: edx_notes_api
