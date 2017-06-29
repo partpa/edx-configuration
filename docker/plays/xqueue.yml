@@ -1,6 +1,6 @@
 - name: Deploy xqueue
   hosts: all
-  become: True
+  sudo: True
   gather_facts: True
   roles:
     - common_vars

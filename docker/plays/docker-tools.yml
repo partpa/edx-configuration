@@ -1,6 +1,6 @@
 - name: build a VM with docker-tools
   hosts: all
-  become: True
+  sudo: True
   gather_facts: True
   roles:
     - docker

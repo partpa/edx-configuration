@@ -1,6 +1,6 @@
 - name: Deploy Harstorage
   hosts: all
-  become: True
+  sudo: True
   gather_facts: True
   roles:
     - docker
