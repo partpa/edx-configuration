@@ -47,4 +47,4 @@ user_debian_pkgs:
 # users. In the default false state this playbook will only print a warning
 # message, but not halt.
 #
-USER_FAIL_MISSING_KEYS: false
+user_fail_missing_keys: false
