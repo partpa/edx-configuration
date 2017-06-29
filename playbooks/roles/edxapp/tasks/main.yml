@@ -124,9 +124,7 @@
     name: "{{ item }}"
     state: present
     update_cache: yes
-  with_flattened:
-    - "{{ edxapp_debian_pkgs_default }}"
-    - "{{ edxapp_debian_pkgs_extra }}"
+  with_items: "{{ edxapp_debian_pkgs }}"
   tags:
     - install
     - install:base
