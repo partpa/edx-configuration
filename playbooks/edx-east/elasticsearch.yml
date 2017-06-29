@@ -27,6 +27,7 @@
   roles:
     - common
     - aws
+    - oraclejdk
     - elasticsearch
   post_tasks:
     - debug:
