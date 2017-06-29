@@ -249,18 +249,18 @@
     - install:base
     - install:plugins
 
-- name: Setup nginx vhost
+- name: Setup nginix vhost
   template:
     src: "etc/nginx/sites-available/jenkins.j2"
-    dest: "{{ nginx_sites_available_dir }}/jenkins"
+    dest: "/etc/nginx/sites-available/jenkins"
   tags:
     - install
     - install:vhosts
 
 - name: Enable jenkins vhost
   file:
-    src: "{{ nginx_sites_available_dir }}/jenkins"
-    dest: "{{ nginx_sites_enabled_dir }}/jenkins"
+    src: "/etc/nginx/sites-available/jenkins"
+    dest: "/etc/nginx/sites-enabled/jenkins"
     state: link
   tags:
     - install
