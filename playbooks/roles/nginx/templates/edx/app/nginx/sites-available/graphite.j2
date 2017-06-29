@@ -20,6 +20,7 @@ upstream graphite_app_server {
 }
 
 server {
+
   server_name graphite.*;
   listen {{ GRAPHITE_NGINX_PORT }} {{ default_site }};
   client_max_body_size 1M;

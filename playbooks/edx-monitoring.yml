@@ -15,8 +15,6 @@
   gather_facts: True
   roles:
     - graphite
-    - grafana
     - role: nginx
       nginx_sites:
       - graphite
-      - grafana
